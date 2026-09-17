@@ -1,0 +1,114 @@
+{
+  "files": [
+    {
+      "path": ".gitignore",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "README.md",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "build.gradle.kts",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/build.gradle.kts",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/commonMain/composeResources/drawable/compose-multiplatform.xml",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/commonMain/kotlin/com/example/cmpn/App.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/commonMain/kotlin/com/example/cmpn/Greeting.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/commonMain/kotlin/com/example/cmpn/GreetingUtil.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/commonMain/kotlin/com/example/cmpn/Platform.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/linuxArm64Main/kotlin/com/example/cmpn/Platform.linuxArm64.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/linuxX64Main/kotlin/com/example/cmpn/Platform.linuxX64.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/macosArm64Main/kotlin/com/example/cmpn/Platform.macosArm64.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/mingwX64Main/kotlin/com/example/cmpn/Platform.mingwX64.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "composeApp/src/nativeMain/kotlin/com/example/cmpn/Entrypoint.kt",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "gradle.properties",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "gradle/gradle-daemon-jvm.properties",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "gradle/libs.versions.toml",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "binary": true,
+      "executable": false
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "gradlew",
+      "binary": false,
+      "executable": true
+    },
+    {
+      "path": "gradlew.bat",
+      "binary": false,
+      "executable": false
+    },
+    {
+      "path": "settings.gradle.kts",
+      "binary": false,
+      "executable": false
+    }
+  ]
+}
