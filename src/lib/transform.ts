@@ -166,9 +166,16 @@ function rewriteCatalog(files: FileSet, options: WizardOptions): void {
   encode(files, path, lines.join('\n') + '\n');
 }
 
-/** Rewrites the kotlin { buildList { ... }.forEach { ... } } target block. */
+/** Rewrites the kotlin { buildList { ... }.forEach { ... } } target block.
+ *  macosArm64 (when selected) is added unconditionally; the other targets are
+ *  gated behind `if (!isMacOS)` so a macOS dev machine only compiles the Mac
+ *  target, while other hosts build everything selected. When macosArm64 is not
+ *  selected, the remaining targets are added unconditionally (no host gate). */
 function buildTargetBlock(platforms: string[]): string {
-  const lines = platforms.map((p) => `        add(${p}())`).join('\n');
+  const TARGET_ORDER = ['macosArm64', 'linuxArm64', 'linuxX64', 'mingwX64'];
+  const selected = TARGET_ORDER.filter((t) => platforms.includes(t));
+  const hasMac = selected.includes('macosArm64');
+  const nonMac = selected.filter((t) => t !== 'macosArm64');
 
   const branches: string[] = [];
   if (platforms.includes('mingwX64')) {
@@ -190,8 +197,25 @@ function buildTargetBlock(platforms: string[]): string {
   const whenBlock =
     branches.length > 0 ? `\n                when {\n${branches.join('\n\n')}\n                }` : '';
 
-  return `    buildList {
-${lines}
+  let addLines: string;
+  let hostGate = '';
+  if (hasMac && nonMac.length > 0) {
+    hostGate = `    val hostOs = System.getProperty("os.name")
+    val isMacOS = hostOs == "Mac OS X"
+
+`;
+    addLines = [
+      `        add(macosArm64())`,
+      `        if (!isMacOS) {`,
+      ...nonMac.map((t) => `            add(${t}())`),
+      `        }`,
+    ].join('\n');
+  } else {
+    addLines = selected.map((t) => `        add(${t}())`).join('\n');
+  }
+
+  return `${hostGate}    buildList {
+${addLines}
     }.forEach {
         it.binaries {
             executable {${whenBlock}

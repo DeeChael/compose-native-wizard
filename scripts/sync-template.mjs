@@ -11,9 +11,9 @@ import { join, relative, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
-const templateDir = resolve(
-  process.argv[2] ?? process.env.TEMPLATE_DIR ?? join(root, '..', '..', 'kotlin', 'compose-native-template'),
-);
+// Defaults to the in-repo copy at ./template; override with an argument or
+// TEMPLATE_DIR to sync from a live checkout of the template project instead.
+const templateDir = resolve(process.argv[2] ?? process.env.TEMPLATE_DIR ?? join(root, 'template'));
 const outDir = join(root, 'public', 'template');
 
 if (!existsSync(templateDir)) {
@@ -26,7 +26,7 @@ const EXCLUDED_DIRS = new Set(['.git', '.gradle', '.idea', 'build', '.kotlin']);
 function walk(dir) {
   const files = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (EXCLUDED_DIRS.has(entry.name)) continue;
+    if (EXCLUDED_DIRS.has(entry.name) || entry.name === '.DS_Store') continue;
     const full = join(dir, entry.name);
     if (entry.isDirectory()) files.push(...walk(full));
     else if (entry.isFile()) files.push(full);

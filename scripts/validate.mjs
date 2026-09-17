@@ -10,7 +10,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
-const templateDir = resolve(root, '..', '..', 'kotlin', 'compose-native-template');
+const templateDir = resolve(root, 'template');
 const bundlePath = join(root, 'node_modules', '.tmp', 'transform.bundle.mjs');
 
 execFileSync(
@@ -70,6 +70,9 @@ console.log('Case 1: all platforms + all libraries + rename');
   const appKts = dec.decode(files.get('composeApp/build.gradle.kts'));
   check('4 个 target 都在', ['linuxX64', 'linuxArm64', 'macosArm64', 'mingwX64'].every((t) =>
     appKts.includes(`add(${t}())`)));
+  check('macOS host 门控（isMacOS）', appKts.includes('val isMacOS = hostOs == "Mac OS X"') &&
+    appKts.includes('if (!isMacOS) {') &&
+    appKts.indexOf('add(macosArm64())') < appKts.indexOf('if (!isMacOS)'));
   check('mingw/linux linkerOpts 分支都在', appKts.includes('target.name == "mingwX64"') &&
     appKts.includes('target.name.startsWith("linux")'));
   check('ktorfit 自动带上 ktor', appKts.includes('implementation(libs.ktor.client.cio)'));
@@ -179,6 +182,7 @@ console.log('Case 2: macOS only + no libraries');
   const appKts = dec.decode(files.get('composeApp/build.gradle.kts'));
   check('只剩 macosArm64 target', appKts.includes('add(macosArm64())') &&
     !appKts.includes('add(linuxX64())') && !appKts.includes('add(mingwX64())'));
+  check('仅 macOS 时无 host 门控', !appKts.includes('isMacOS'));
   check('无 linkerOpts when 分支', !appKts.includes('when {') && !appKts.includes('linkerOpts'));
   check('未选平台 source set 已删除',
     !['linuxX64', 'linuxArm64', 'mingwX64'].some((t) =>
@@ -216,6 +220,7 @@ console.log('Case 3: mingwX64 + linuxX64 + ktorfit');
   const appKts = dec.decode(files.get('composeApp/build.gradle.kts'));
   check('target 正确', appKts.includes('add(mingwX64())') && appKts.includes('add(linuxX64())') &&
     !appKts.includes('add(macosArm64())'));
+  check('未选 macOS 时无 host 门控（非 mac target 无条件添加）', !appKts.includes('isMacOS'));
   check('两个 linkerOpts 分支都在', appKts.includes('target.name == "mingwX64"') &&
     appKts.includes('target.name.startsWith("linux")'));
   check('macOS experimental 行已移除',
